@@ -30,7 +30,7 @@ void ShortConvolve(float* x, const int M, Scales* scale, Ricker* ricker, float* 
     FillRickerArray(sc, N, ricker, multF);
     int k = -dFloor;
     float firstElement = 0.0;
-    int init = -1;
+    // int init = -1;
     for(int i = 0; i < M; ++i, ++k){
         const float xi = x[i];
         int tempK = k;
@@ -50,23 +50,30 @@ void ShortConvolve(float* x, const int M, Scales* scale, Ricker* ricker, float* 
         }
 
         // for(int j = int_max( -1, -k + 1); j < N; ++j)
-
-        for(; j < N; ++j, ++tempK){
+        while(j < N && tempK < len + 1){
             const int idx = tempK - 1;
             const float temp = multF[j];
+            out[idx] += xi * temp;
+            ++j;
+            ++tempK;
+        }
+
+        /*for(; j < N && tempK < len + 1; ++j, ++tempK){
+            const int idx = tempK - 1;
+            const float temp = multF[j];
+            out[idx] += xi * temp;
             //if (tempK > 0) {
-            if (idx > init) {
-                out[idx] = xi * temp; //GetRicker(j, sc, coef, ricker);
+            *//*if (idx > init) {
+                 //GetRicker(j, sc, coef, ricker);
                 init = idx;
             } else {
                 out[idx] += xi * temp;//GetRicker(j, sc, coef, ricker);//xi * multF[j];
-            }
+            }*//*
             //}else
             //    firstElement += xi * temp;//GetRicker(j, sc, coef, ricker);
 
-            if(idx >= len)
-                break;
-        }
+
+        }*/
         // k = -dFloor + i + 1;
     }
 
