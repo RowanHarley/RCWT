@@ -12,7 +12,7 @@ class Ricker {
 public:
     Ricker() = default;
     [[nodiscard]] inline float RickerInt(float t) const{
-        return coefexp * t * expf(t * t);
+        return rickercoef * t * expf(-t * t/2.f);
     }
 private:
     const float rickercoef = 0.8673250705840775;

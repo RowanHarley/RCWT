@@ -114,7 +114,7 @@ int main(int argc, char * argv[]){
     cout << endl;
     cout << "RCWT on sig1 with length N: " << size;
     show_stats(times,runs);
-
+    return 0;
     //FCWT sig2
     cout << "----- Second test -----" << endl;
     cout << "Testing with sig2: random floats between 0-10" << endl;

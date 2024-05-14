@@ -36,7 +36,7 @@ int main(){
     }
     std::vector<float> y2 = testX();
     Scales scale(1, 16, 30);
-    Ricker ricker(1000);
+    Ricker ricker;
 
     std::vector<float> res(30 * 15);
     cwt(y, &scale, &ricker, &res[0], 5, 1);
