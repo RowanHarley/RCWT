@@ -107,7 +107,7 @@ int main(int argc, char * argv[]){
         // cwt(sig1, scale, sigout,1000, nthreads);
         finish = chrono::high_resolution_clock::now();
         times[k] = finish - start;
-        sigout.clear();
+
         cout << "Took " << times[k].count() << "s" << endl;
         this_thread::sleep_for(chrono::microseconds(10000000));
 
@@ -115,7 +115,7 @@ int main(int argc, char * argv[]){
     cout << endl;
     cout << "RCWT on sig1 with length N: " << size;
     show_stats(times,runs);
-    return 0;
+
     //FCWT sig2
     cout << "----- Second test -----" << endl;
     cout << "Testing with sig2: random floats between 0-10" << endl;
@@ -124,7 +124,7 @@ int main(int argc, char * argv[]){
         cout << sig2[n] << ",";
     }
     cout << "...]" << endl;
-    sigout.clear();
+    
     for(int k=0; k<runs; k++) {
         cout << ".";
         start = chrono::high_resolution_clock::now();
@@ -133,7 +133,7 @@ int main(int argc, char * argv[]){
 
         finish = chrono::high_resolution_clock::now();
         times[k] = finish - start;
-        sigout.clear();
+
         this_thread::sleep_for(chrono::microseconds(10000000));
     }
     cout << endl;
@@ -149,7 +149,7 @@ int main(int argc, char * argv[]){
         cout << sig3[n] << ",";
     }
     cout << "...]" << endl;
-    sigout.clear();
+
     for(int k=0; k<runs; k++) {
         cout << ".";
         start = chrono::high_resolution_clock::now();
@@ -158,7 +158,7 @@ int main(int argc, char * argv[]){
 
         finish = chrono::high_resolution_clock::now();
         times[k] = finish - start;
-        sigout.clear();
+
         this_thread::sleep_for(chrono::microseconds(10000000));
     }
     cout << endl;

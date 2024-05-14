@@ -8,7 +8,6 @@ add_executable(CWT benchmark/benchmark.cpp
         transforms.h
         Scales.cpp
         Scales.h
-        Ricker.cpp
         Ricker.h)
 
 find_package(OpenMP)

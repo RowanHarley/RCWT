@@ -18,16 +18,17 @@ Below are the benchmark results for each signal. This can be carried out indepen
 
 | Signal   | 10k - 300  | SD 		       | 10k - 3000 	 | SD 		        | 100k - 300 	 | SD 		       | 100k - 3000 	 | SD 		     |
 |----------|------------|-------------|--------------|--------------|--------------|-------------|---------------|-----------|
-| Signal 1 | 0.267584s  | 0.00403663s | 2.54619s		  | 0.0101705s	 | 2.57582s	   | 0.0175132s  | 27.2342s      | 0.201316s  |
-| Signal 2 | 0.272648s | 0.00832729s | 2.54661s		  | 0.00406283s  | 2.58572s		  | 0.0157627s  | 27.3185s      | 0.18166s |
-| Signal 3 | 0.267189s | 0.00316097s | 2.54882s		  | 0.0119903s  | 2.58616s		  | 0.0134953s | 27.2408s      | 0.14322s |
+| Signal 1 | 0.113338s  | 0.00527319s | 0.956901s		  | 0.0094s	 | 0.982385s	   | 0.00204517s  | 9.64566s              | 0.111637s  |
+| Signal 2 | 0.104097s | 0.00335322s | 0.96229s		  | 0.0112685s  | 0.975212s		  | 0.014643s  | 9.62468s      | 0.14903s |
+| Signal 3 | 0.103579s | 0.00145639s | 0.961407s		  | 0.0107727s  | 0.968442s	  | 0.0114715s | 9.64459s      | 0.164847s |
 
-The test.cpp file can be used to compare results with the PyWavelets library. The results are similar, but not exact. If you require more precision,
-consider changing the sample size to a larger value. The default is 1000 samples of the Ricker Wavelet across the bounds [-8, 8]. 
+The test.cpp file can be used to compare results with the PyWavelets library. The results are similar, but not exact. They should be more accurate as this algorithm
+uses the integral to calculate the exact value at a point, rather than an integral estimation method used in PyWavelets.
 
 # Usage
 
-This library currently supports 1D vectors, although I do have plans to create a 2D version.
+This library currently supports 1D vectors, although I do have plans to create a 2D version. Downloading the `.cpp` and `.h` files should be enough to run in your environment.
+Refer to `test.cpp` for example usage. 
 
 # Dependencies
 

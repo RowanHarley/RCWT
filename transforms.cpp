@@ -58,23 +58,6 @@ void ShortConvolve(float* x, const int M, Scales* scale, Ricker* ricker, float* 
             ++tempK;
         }
 
-        /*for(; j < N && tempK < len + 1; ++j, ++tempK){
-            const int idx = tempK - 1;
-            const float temp = multF[j];
-            out[idx] += xi * temp;
-            //if (tempK > 0) {
-            *//*if (idx > init) {
-                 //GetRicker(j, sc, coef, ricker);
-                init = idx;
-            } else {
-                out[idx] += xi * temp;//GetRicker(j, sc, coef, ricker);//xi * multF[j];
-            }*//*
-            //}else
-            //    firstElement += xi * temp;//GetRicker(j, sc, coef, ricker);
-
-
-        }*/
-        // k = -dFloor + i + 1;
     }
 
     if(k < M){
@@ -86,6 +69,43 @@ void ShortConvolve(float* x, const int M, Scales* scale, Ricker* ricker, float* 
         }
     }
 }
+// Here, y will be reversed
+float DotProductReverse(const float* x, const float* y, const int End, const int xEnd){
+    float ans = 0.0;
+    for(int i = 0; i < End && i < xEnd; i++){
+        ans += x[i] * y[End - i - 1];
+    }
+    return ans;
+}
+
+void ShortConvolveReverse(float* x, const int M, Scales* scale, Ricker* ricker, float* out, const int row){
+    // Exploits the fact that we only need from floor(d):len(conv) - ceil(d)
+    // std::cout << "Size: " << out->size() << std::endl;
+    const float sc = scale->scale[row];
+    const int N = sc * 16 + 1;
+    const int coefLen = (M + N - 1) - 1; // Differencing will remove 1
+    const float d = (float)(coefLen - M)/2.f;
+    const int dFloor = floorf(d);
+    const int dCeil = ceilf(d);
+    auto* multF = (float*)malloc(sizeof(float) * N);
+    FillRickerArray(sc, N, ricker, multF);
+    int k = dFloor;
+    float firstElement = 0.0;
+    // int init = -1;
+    for(; k < coefLen - dCeil + 1; k++){
+        int xIdx = int_max(0, k - N);
+        float temp = DotProductReverse(&x[xIdx], multF, int_min(k, N), M - xIdx);
+        if(k == dFloor)
+            firstElement = temp;
+        else{
+            float second = temp;
+            out[k - dFloor - 1] = temp - firstElement;
+            firstElement = second;
+        }
+    }
+    free(multF);
+}
+
 void cwt(std::vector<float>& x, Scales* scales, Ricker* ricker, float* out, int threads, int ndim){
     const int X = (int)x.size();
 #ifndef PROFILING
@@ -95,7 +115,8 @@ void cwt(std::vector<float>& x, Scales* scales, Ricker* ricker, float* out, int 
 #pragma omp for nowait schedule(dynamic)
 #endif
     for (int i = 0; i < scales->n; ++i) {
-        ShortConvolve(&x[0], X, scales, ricker, &out[i * X], i);
+        // ShortConvolve(&x[0], X, scales, ricker, &out[i * X], i);
+        ShortConvolveReverse(&x[0], X, scales, ricker, &out[i * X], i);
     }
 #ifndef PROFILING
     }
