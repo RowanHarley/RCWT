@@ -7,8 +7,8 @@
 #include <iostream>
 #include <iomanip>
 
-std::vector<double> testY(){
-    std::vector<double> y(15);
+std::vector<float> testY(){
+    std::vector<float> y(15);
     // std::cout << "[ ";
     for(int i = 0; i < y.size(); i++){
         y[i] = sin(2 * M_PI * i/32);
@@ -17,23 +17,40 @@ std::vector<double> testY(){
     // std::cout << "]" << std::endl;
     return y;
 }
-
+std::vector<float> testX(){
+    std::vector<float> y(15);
+    // std::cout << "[ ";
+    for(int i = 0; i < y.size(); i++){
+        y[i] = 2 * sin(2 * M_PI * i/64 - 1);
+        // std::cout << y[i] << " ";
+    }
+    // std::cout << "]" << std::endl;
+    return y;
+}
 int main(){
 
-    std::vector<double> y = testY();
-    std::vector<double> scales(30);
+    std::vector<float> y = testY();
+    std::vector<float> scales(30);
     for(int i = 2; i <= 31; i++){
         scales[i-2] = i/2.;
     }
-    auto res = cwt(y, scales, 1000, 5);
+    std::vector<float> y2 = testX();
+    Scales scale(1, 16, 30);
+    Ricker ricker(1000);
+
+    std::vector<float> res(30 * 15);
+    cwt(y, &scale, &ricker, &res[0], 5, 1);
     // auto res = CWT.transform(1000);
     std::cout << std::fixed;
     std::cout << std::setprecision(3);
-    for(auto & re : res){
-        std::cout << "[ ";
-        for(double j : re){
-            std::cout << j << " ";
+    std::cout << "[ ";
+    for(int i = 0; i < 30 * 15; i++){
+        std::cout << res[i] << " ";
+        if(i % 15 == 14) {
+            std::cout << "]" << std::endl;
+            if(i != 30 * 15 - 1)
+                std::cout << "[ ";
         }
-        std::cout << "]" << std::endl;
     }
+    return 0;
 }

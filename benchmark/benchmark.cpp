@@ -5,7 +5,11 @@
 #include "../transforms.h"
 #include <chrono>
 #include <thread>
+#include "../Ricker.h"
+#include "../Scales.h"
 using namespace std;
+
+# define M_PI           3.14159265358979323846
 
 //Calculate and print mean and variance of times array
 static void show_stats(chrono::duration<double> *times, int runs)
@@ -51,17 +55,17 @@ int main(int argc, char * argv[]){
         fn = stoi(argv[2]);
     }
 
-    double *sig1d = (double*)malloc(sizeof(double)*size);
-    double *sig2d = (double*)malloc(sizeof(double)*size);
-    double *sig3d = (double*)malloc(sizeof(double)*size);
-    double *sigoutd = (double*)malloc(sizeof(double)*sigoutsize);
+    float *sig1d = (float*)malloc(sizeof(float)*size);
+    float *sig2d = (float*)malloc(sizeof(float)*size);
+    float *sig3d = (float*)malloc(sizeof(float)*size);
+    float *sigoutd = (float*)malloc(sizeof(float)*sigoutsize);
 
     for(int i=0; i<size; i++) {
         //Sig1: dynamic sine wave with varying frequency from 1Hz-7Hz, sampling rate of 64Hz.
-        sig1d[i] = cos((2.0*3.1415*(hz+((double)(7*i)/size)))*((double)i/(float)fs));
+        sig1d[i] = cos((2.0*3.1415*(hz+((float)(7*i)/size)))*((float)i/(float)fs));
 
         //Sig2: random numbers between 0-10.
-        sig2d[i] = ((double)(rand() % 1000))/100.0;
+        sig2d[i] = ((float)(rand() % 1000))/100.0;
 
         //Sig3: repeating non-smooth function.
         sig3d[i] = (i%10==0);
@@ -84,31 +88,32 @@ int main(int argc, char * argv[]){
     }
     cout << "...]" << endl;
 
-    std::vector<double> sig1(sig1d, sig1d + size);
-    std::vector<double> sig2(sig2d, sig2d + size);
-    std::vector<double> sig3(sig3d, sig3d + size);
-    std::vector<double> scale(fn);
+    std::vector<float> sig1(sig1d, sig1d + size);
+    std::vector<float> sig2(sig2d, sig2d + size);
+    std::vector<float> sig3(sig3d, sig3d + size);
+    Scales scale(f0, f1, fn);
+    Ricker ricker;
+    /*std::vector<float> scale(fn);
 
     for(int i = 0; i < fn; i++){
-        scale[i] = f0 + i * (double)(f1 - f0)/fn;
-    }
-    std::vector<std::vector<double>> sigout(fs);
-
+        scale[i] = f0 + i * (float)(f1 - f0)/fn;
+    }*/
+    vector<float> sigout(fn * size);
     for(int k=0; k<runs; k++) {
         cout << ".";
 
         start = chrono::high_resolution_clock::now();
-
-        sigout = cwt(sig1, scale,1000, nthreads);
+        cwt(sig1, &scale, &ricker, &sigout[0], nthreads, 1);
+        // cwt(sig1, scale, sigout,1000, nthreads);
         finish = chrono::high_resolution_clock::now();
         times[k] = finish - start;
+        cout << "Took " << times[k].count() << "s" << endl;
         this_thread::sleep_for(chrono::microseconds(10000000));
 
     }
     cout << endl;
     cout << "RCWT on sig1 with length N: " << size;
     show_stats(times,runs);
-
 
     //FCWT sig2
     cout << "----- Second test -----" << endl;
@@ -122,8 +127,8 @@ int main(int argc, char * argv[]){
     for(int k=0; k<runs; k++) {
         cout << ".";
         start = chrono::high_resolution_clock::now();
-
-        sigout = cwt(sig2, scale,1000, nthreads);
+        cwt(sig2, &scale, &ricker, &sigout[0], nthreads, 1);
+        // cwt(sig2, scale, sigout,1000, nthreads);
 
         finish = chrono::high_resolution_clock::now();
         times[k] = finish - start;
@@ -147,8 +152,8 @@ int main(int argc, char * argv[]){
     for(int k=0; k<runs; k++) {
         cout << ".";
         start = chrono::high_resolution_clock::now();
-
-        sigout = cwt(sig3, scale,1000, nthreads);
+        cwt(sig2, &scale, &ricker, &sigout[0], nthreads, 1);
+        // cwt(sig3, scale, sigout,1000, nthreads);
 
         finish = chrono::high_resolution_clock::now();
         times[k] = finish - start;

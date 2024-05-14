@@ -18,9 +18,9 @@ Below are the benchmark results for each signal. This can be carried out indepen
 
 | Signal   | 10k - 300  | SD 		       | 10k - 3000 	 | SD 		        | 100k - 300 	 | SD 		       | 100k - 3000 	 | SD 		     |
 |----------|------------|-------------|--------------|--------------|--------------|-------------|---------------|-----------|
-| Signal 1 | 0.038894s  | 0.00500279s | 0.294278s		  | 0.00876142s	 | 0.299516s	   | 0.0177424s  | 4.64954s      | 3.61342s  |
-| Signal 2 | 0.0392158s | 0.00656122s | 0.306947s		  | 0.00500983s  | 0.303038s		  | 0.0134372s  | 3.03345s      | 0.100405s |
-| Signal 3 | 0.0403419s | 0.00306795s | 0.298971s		  | 0.00739979s  | 0.294721s		  | 0.00995364s | 2.99017s      | 0.323296s |
+| Signal 1 | 0.267584s  | 0.00403663s | 2.54619s		  | 0.0101705s	 | 2.57582s	   | 0.0175132s  | 27.2342s      | 0.201316s  |
+| Signal 2 | 0.272648s | 0.00832729s | 2.54661s		  | 0.00406283s  | 2.58572s		  | 0.0157627s  | 27.3185s      | 0.18166s |
+| Signal 3 | 0.267189s | 0.00316097s | 2.54882s		  | 0.0119903s  | 2.58616s		  | 0.0134953s | 27.2408s      | 0.14322s |
 
 The test.cpp file can be used to compare results with the PyWavelets library. The results are similar, but not exact. If you require more precision,
 consider changing the sample size to a larger value. The default is 1000 samples of the Ricker Wavelet across the bounds [-8, 8]. 
